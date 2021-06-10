@@ -55,11 +55,10 @@
            GOBACK.
 
        0400-GENERAL-ITEM.
-           IF QUALITY IS GREATER THAN 0 
-               IF SELL-IN IS GREATER THAN 0 
-                   SUBTRACT 1 FROM QUALITY
-               ELSE 
-                   SUBTRACT 2 FROM QUALITY
+           IF QUALITY IS GREATER THAN 0 AND SELL-IN IS GREATER THAN 0 
+               SUBTRACT 1 FROM QUALITY
+           ELSE 
+               SUBTRACT 2 FROM QUALITY
            END-IF. 
            IF QUALITY IS LESS THAN 0 
                MOVE 0 TO QUALITY
@@ -88,11 +87,10 @@
            ADD 0 TO QUALITY.
        
        0800-CONJURED.
-           IF QUALITY IS GREATER THAN 0 
-               IF SELL-IN IS GREATER THAN 0 
-                   SUBTRACT 2 FROM QUALITY
-               ELSE 
-                   SUBTRACT 4 FROM QUALITY
+           IF QUALITY IS GREATER THAN 0 AND SELL-IN IS GREATER THAN 0 
+               SUBTRACT 2 FROM QUALITY
+           ELSE 
+               SUBTRACT 4 FROM QUALITY
            END-IF. 
            IF QUALITY IS LESS THAN 0 
                MOVE 0 TO QUALITY
