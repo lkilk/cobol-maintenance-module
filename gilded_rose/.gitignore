@@ -1,0 +1,4 @@
+tmp/*
+modules/*
+env/test/run/*
+!**/.keep
