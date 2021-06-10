@@ -28,18 +28,17 @@
            READ FI-IN-ITEMS END GO TO 0200-END.
              MOVE FS-IN-ITEM TO FS-OUT-ITEM.
 
-               IF ITEM-NAME NOT EQUAL "Sulfuras, Hand of Ragnaros"
+               IF ITEM-NAME(1:8) NOT EQUAL "Sulfuras"
                    SUBTRACT 1 FROM SELL-IN
                END-IF.
 
                IF ITEM-NAME = "Aged Brie" 
                    PERFORM 0500-AGED-BRIE 
-               ELSE IF ITEM-NAME =
-               "Backstage passes to a TAFKAL80ETC concert"
+               ELSE IF ITEM-NAME(1:16) = "Backstage passes"
                    PERFORM 0600-BACKSTAGE-PASSES
-               ELSE IF ITEM-NAME = "Sulfuras, Hand of Ragnaros"
+               ELSE IF ITEM-NAME(1:8) = "Sulfuras"
                    PERFORM 0700-SULFURAS
-               ELSE IF ITEM-NAME = "Conjured Mana Cake"
+               ELSE IF ITEM-NAME(1:8) = "Conjured"
                    PERFORM 0800-CONJURED
                ELSE 
                    PERFORM 0400-GENERAL-ITEM
