@@ -7,7 +7,7 @@
            CALL "SYSTEM" USING "cat in.dat"
            DISPLAY " "
 
-           CALL "gilded-rose".
+           CALL "new-gilded-rose".
 
 
            DISPLAY "Day 1"

@@ -1,5 +1,5 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. "gilded-rose".
+       PROGRAM-ID. "new-gilded-rose".
 
        ENVIRONMENT DIVISION.
            INPUT-OUTPUT SECTION.
@@ -21,10 +21,6 @@
              05 FILLER PIC X VALUE SPACE.
              05 ITEM-NAME PIC X(50).
 
-       WORKING-STORAGE SECTION.
-           01 DEDUCTION PIC 9 VALUE 0.
-           01 NUM PIC 9.
-
        PROCEDURE DIVISION.
            OPEN INPUT FI-IN-ITEMS OUTPUT FI-OUT-ITEMS.
 
@@ -36,11 +32,17 @@
                    SUBTRACT 1 FROM SELL-IN
                END-IF.
 
-               IF ITEM-NAME NOT EQUAL "Aged Brie" AND ITEM-NAME NOT
-               EQUAL "Backstage passes to a TAFKAL80ETC concert"
-                   PERFORM 0400-DECREASE-QUALITY
-               ELSE
-                   PERFORM 0500-INCREASE-QUALITY
+               IF ITEM-NAME = "Aged Brie" 
+                   PERFORM 0500-AGED-BRIE 
+               ELSE IF ITEM-NAME =
+               "Backstage passes to a TAFKAL80ETC concert"
+                   PERFORM 0600-BACKSTAGE-PASSES
+               ELSE IF ITEM-NAME = "Sulfuras, Hand of Ragnaros"
+                   PERFORM 0700-SULFURAS
+               ELSE IF ITEM-NAME = "Conjured Mana Cake"
+                   PERFORM 0800-CONJURED
+               ELSE 
+                   PERFORM 0400-GENERAL-ITEM
                END-IF. 
       
              WRITE FS-OUT-ITEM.
@@ -53,46 +55,47 @@
        0300-RETURN.
            GOBACK.
 
-       0400-DECREASE-QUALITY.
-           IF ITEM-NAME IS EQUAL TO "Sulfuras, Hand of Ragnaros" 
-               MOVE 0 TO DEDUCTION 
-           ELSE IF ITEM-NAME IS EQUAL TO "Conjured Mana Cake"
-               MOVE 2 TO DEDUCTION
-           ELSE
-               MOVE 1 TO DEDUCTION
-           END-IF. 
+       0400-GENERAL-ITEM.
            IF QUALITY IS GREATER THAN 0 
                IF SELL-IN IS GREATER THAN 0 
-                   COMPUTE NUM = 1 * DEDUCTION
-                   SUBTRACT NUM FROM QUALITY
+                   SUBTRACT 1 FROM QUALITY
                ELSE 
-                   COMPUTE NUM = 2 * DEDUCTION
-                   SUBTRACT NUM FROM QUALITY
+                   SUBTRACT 2 FROM QUALITY
            END-IF. 
            IF QUALITY IS LESS THAN 0 
                MOVE 0 TO QUALITY
            END-IF. 
 
-       0500-INCREASE-QUALITY.
+       0500-AGED-BRIE.
            IF QUALITY IS LESS THAN 50 
-               IF ITEM-NAME IS EQUAL TO "Aged Brie" 
-                   ADD 1 TO QUALITY 
-               ELSE IF SELL-IN IS LESS THAN 1 
-                   MOVE 0 TO QUALITY 
-               ELSE IF SELL-IN IS LESS THAN 6 
-                   ADD 3 TO QUALITY 
-               ELSE IF SELL-IN IS LESS THAN 11 
-                   ADD 2 TO QUALITY
-               ELSE 
-                   ADD 1 TO QUALITY
-               END-IF
+                   ADD 1 TO QUALITY  
+           END-IF.
+
+       0600-BACKSTAGE-PASSES.
+           IF SELL-IN IS LESS THAN 1 
+               MOVE 0 TO QUALITY 
+           ELSE IF SELL-IN IS LESS THAN 6 
+               ADD 3 TO QUALITY 
+           ELSE IF SELL-IN IS LESS THAN 11 
+               ADD 2 TO QUALITY
+           ELSE 
+               ADD 1 TO QUALITY
            END-IF.
            IF QUALITY IS GREATER THAN 50 
                MOVE 50 TO QUALITY
            END-IF. 
 
+       0700-SULFURAS.
+           ADD 0 TO QUALITY.
+       
+       0800-CONJURED.
+           IF QUALITY IS GREATER THAN 0 
+               IF SELL-IN IS GREATER THAN 0 
+                   SUBTRACT 2 FROM QUALITY
+               ELSE 
+                   SUBTRACT 4 FROM QUALITY
+           END-IF. 
+           IF QUALITY IS LESS THAN 0 
+               MOVE 0 TO QUALITY
+           END-IF. 
            
-               
-                
-           
-
