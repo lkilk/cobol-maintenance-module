@@ -33,15 +33,15 @@
                END-IF.
 
                IF ITEM-NAME = "Aged Brie" 
-                   PERFORM 0500-AGED-BRIE 
+                   PERFORM 0400-AGED-BRIE 
                ELSE IF ITEM-NAME(1:16) = "Backstage passes"
-                   PERFORM 0600-BACKSTAGE-PASSES
+                   PERFORM 0500-BACKSTAGE-PASSES
                ELSE IF ITEM-NAME(1:8) = "Sulfuras"
                    ADD 0 TO QUALITY
                ELSE IF ITEM-NAME(1:8) = "Conjured"
-                   PERFORM 0700-CONJURED
+                   PERFORM 0600-CONJURED
                ELSE 
-                   PERFORM 0400-GENERAL-ITEM
+                   PERFORM 0300-GENERAL-ITEM
                END-IF. 
       
              WRITE FS-OUT-ITEM.
@@ -51,10 +51,7 @@
            CLOSE FI-IN-ITEMS.
            CLOSE FI-OUT-ITEMS.
 
-    *>    0300-RETURN.
-    *>        GOBACK.
-
-       0400-GENERAL-ITEM.
+       0300-GENERAL-ITEM.
            SUBTRACT 1 FROM QUALITY
            IF SELL-IN IS LESS THAN 0 
                SUBTRACT 1 FROM QUALITY
@@ -63,26 +60,25 @@
                MOVE 0 TO QUALITY
            END-IF. 
 
-       0500-AGED-BRIE.
+       0400-AGED-BRIE.
            IF QUALITY IS LESS THAN 50 
                    ADD 1 TO QUALITY  
            END-IF.
 
-       0600-BACKSTAGE-PASSES.
+       0500-BACKSTAGE-PASSES.
+           ADD 1 TO QUALITY. 
            IF SELL-IN IS LESS THAN 1 
                MOVE 0 TO QUALITY 
            ELSE IF SELL-IN IS LESS THAN 6 
-               ADD 3 TO QUALITY 
+               ADD 2 TO QUALITY 
            ELSE IF SELL-IN IS LESS THAN 11 
-               ADD 2 TO QUALITY
-           ELSE 
                ADD 1 TO QUALITY
            END-IF.
            IF QUALITY IS GREATER THAN 50 
                MOVE 50 TO QUALITY
            END-IF. 
        
-       0700-CONJURED.
+       0600-CONJURED.
            SUBTRACT 2 FROM QUALITY
            IF SELL-IN IS LESS THAN 0
                SUBTRACT 2 FROM QUALITY
