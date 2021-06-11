@@ -37,9 +37,9 @@
                ELSE IF ITEM-NAME(1:16) = "Backstage passes"
                    PERFORM 0600-BACKSTAGE-PASSES
                ELSE IF ITEM-NAME(1:8) = "Sulfuras"
-                   PERFORM 0700-SULFURAS
+                   ADD 0 TO QUALITY
                ELSE IF ITEM-NAME(1:8) = "Conjured"
-                   PERFORM 0800-CONJURED
+                   PERFORM 0700-CONJURED
                ELSE 
                    PERFORM 0400-GENERAL-ITEM
                END-IF. 
@@ -51,14 +51,13 @@
            CLOSE FI-IN-ITEMS.
            CLOSE FI-OUT-ITEMS.
 
-       0300-RETURN.
-           GOBACK.
+    *>    0300-RETURN.
+    *>        GOBACK.
 
        0400-GENERAL-ITEM.
-           IF QUALITY IS GREATER THAN 0 AND SELL-IN IS GREATER THAN 0 
+           SUBTRACT 1 FROM QUALITY
+           IF SELL-IN IS LESS THAN 0 
                SUBTRACT 1 FROM QUALITY
-           ELSE 
-               SUBTRACT 2 FROM QUALITY
            END-IF. 
            IF QUALITY IS LESS THAN 0 
                MOVE 0 TO QUALITY
@@ -82,15 +81,11 @@
            IF QUALITY IS GREATER THAN 50 
                MOVE 50 TO QUALITY
            END-IF. 
-
-       0700-SULFURAS.
-           ADD 0 TO QUALITY.
        
-       0800-CONJURED.
-           IF QUALITY IS GREATER THAN 0 AND SELL-IN IS GREATER THAN 0 
+       0700-CONJURED.
+           SUBTRACT 2 FROM QUALITY
+           IF SELL-IN IS LESS THAN 0
                SUBTRACT 2 FROM QUALITY
-           ELSE 
-               SUBTRACT 4 FROM QUALITY
            END-IF. 
            IF QUALITY IS LESS THAN 0 
                MOVE 0 TO QUALITY
