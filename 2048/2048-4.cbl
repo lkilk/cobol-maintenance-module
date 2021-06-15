@@ -59,6 +59,13 @@
        FD  HIGH-SCORE-FILE.
        01  HIGH-SCORE-RECORD                PIC X(23).
        WORKING-STORAGE SECTION.
+        01  NUM-COLOURS.
+           05 NUM-COLOUR OCCURS 16 TIMES   
+           ASCENDING KEY IS COLOUR 
+           INDEXED BY COLOUR-IDX.
+               10 COLOUR PIC 9 VALUE 7.
+       01  COUNTER PIC 99.
+
        01  GAME-STATUS                      PIC X VALUE 'P'.
            88  GAME-OVER                    VALUE 'Q' 'H'.
            88  GAME-QUIT                    VALUE 'Q'.
@@ -166,37 +173,53 @@
       *            FROM GRID-CELL (1, 1)
       *            FOREGROUND-COLOR COLOR-CELL (1, 1).
                10  GRID-DISPLAY-11 LINE 4 COLUMN 2 PIC ZZZ9
-                   FROM GRID-CELL (1, 1).
+                   FROM GRID-CELL (1, 1)
+                   FOREGROUND-COLOR IS COLOUR(1).
                10  GRID-DISPLAY-12 LINE 4 COLUMN 7 PIC ZZZ9
-                   FROM GRID-CELL (1, 2).
+                   FROM GRID-CELL (1, 2)
+                   FOREGROUND-COLOR IS COLOUR(2).
                10  GRID-DISPLAY-13 LINE 4 COLUMN 12 PIC ZZZ9
-                   FROM GRID-CELL (1, 3).
+                   FROM GRID-CELL (1, 3)
+                   FOREGROUND-COLOR IS COLOUR(3).
                10  GRID-DISPLAY-14 LINE 4 COLUMN 17 PIC ZZZ9
-                   FROM GRID-CELL (1, 4).
+                   FROM GRID-CELL (1, 4)
+                   FOREGROUND-COLOR IS COLOUR(4).
                10  GRID-DISPLAY-21 LINE 6 COLUMN 2 PIC ZZZ9
-                   FROM GRID-CELL (2, 1).
+                   FROM GRID-CELL (2, 1)
+                   FOREGROUND-COLOR IS COLOUR(5).
                10  GRID-DISPLAY-22 LINE 6 COLUMN 7 PIC ZZZ9
-                   FROM GRID-CELL (2, 2).
+                   FROM GRID-CELL (2, 2)
+                   FOREGROUND-COLOR IS COLOUR(6).
                10  GRID-DISPLAY-23 LINE 6 COLUMN 12 PIC ZZZ9
-                   FROM GRID-CELL (2, 3).
+                   FROM GRID-CELL (2, 3)
+                   FOREGROUND-COLOR IS COLOUR(7).
                10  GRID-DISPLAY-24 LINE 6 COLUMN 17 PIC ZZZ9
-                   FROM GRID-CELL (2, 4).
+                   FROM GRID-CELL (2, 4)
+                   FOREGROUND-COLOR IS COLOUR(8).
                10  GRID-DISPLAY-31 LINE 8 COLUMN 2 PIC ZZZ9
-                   FROM GRID-CELL (3, 1).
+                   FROM GRID-CELL (3, 1)
+                   FOREGROUND-COLOR IS COLOUR(9).
                10  GRID-DISPLAY-32 LINE 8 COLUMN 7 PIC ZZZ9
-                   FROM GRID-CELL (3, 2).
+                   FROM GRID-CELL (3, 2)
+                   FOREGROUND-COLOR IS COLOUR(10).
                10  GRID-DISPLAY-33 LINE 8 COLUMN 12 PIC ZZZ9
-                   FROM GRID-CELL (3, 3).
+                   FROM GRID-CELL (3, 3)
+                   FOREGROUND-COLOR IS COLOUR(11).
                10  GRID-DISPLAY-34 LINE 8 COLUMN 17 PIC ZZZ9
-                   FROM GRID-CELL (3, 4).
+                   FROM GRID-CELL (3, 4)
+                   FOREGROUND-COLOR IS COLOUR(12).
                10  GRID-DISPLAY-41 LINE 10 COLUMN 2 PIC ZZZ9
-                   FROM GRID-CELL (4, 1).
+                   FROM GRID-CELL (4, 1)
+                   FOREGROUND-COLOR IS COLOUR(13).
                10  GRID-DISPLAY-42 LINE 10 COLUMN 7 PIC ZZZ9
-                   FROM GRID-CELL (4, 2).
+                   FROM GRID-CELL (4, 2)
+                   FOREGROUND-COLOR IS COLOUR(14).
                10  GRID-DISPLAY-43 LINE 10 COLUMN 12 PIC ZZZ9
-                   FROM GRID-CELL (4, 3).
+                   FROM GRID-CELL (4, 3)
+                   FOREGROUND-COLOR IS COLOUR(15).
                10  GRID-DISPLAY-44 LINE 10 COLUMN 17 PIC ZZZ9
-                   FROM GRID-CELL (4, 4).
+                   FROM GRID-CELL (4, 4)
+                   FOREGROUND-COLOR IS COLOUR(16).
                10  LINE 12 COLUMN  4 VALUE 'CHOICE:'.
                10  DISPLAY-UP-COMMAND    LINE 13 COLUMN 12 PIC X(9).
                10  DISPLAY-DOWN-COMMAND  LINE 14 COLUMN 12 PIC X(9).
@@ -208,7 +231,7 @@
                10  GRID-MESSAGE LINE 21 COLUMN 4     PIC X(47).
            05  GRID-INPUT.
                10  USER-INPUT LINE 12 COLUMN 12    PIC X(10)
-                   USING USER-ENTRY.
+                   USING USER-ENTRY.                   
        01  CONTROLS-SCREEN.
            05  BLANK SCREEN.
            05  LINE 2 COLUMN 10 VALUE '2048'.
@@ -302,9 +325,27 @@
            ELSE
                PERFORM PLACE-NEW-TILE
            END-IF
+           PERFORM COLOUR-CHECK
            DISPLAY GAME-GRID-SCREEN
            PERFORM HANDLE-USER-ENTRY
            PERFORM CHECK-IF-WIN
+           .
+       COLOUR-CHECK.
+           MOVE 0 TO COUNTER.
+           SET ROW-INDEX TO ZERO
+           PERFORM 4 TIMES
+               SET ROW-INDEX UP BY 1
+               SET COL-INDEX TO ZERO
+               PERFORM 4 TIMES
+                   SET COL-INDEX UP BY 1
+                   ADD 1 TO COUNTER
+                   IF GRID-CELL (ROW-INDEX, COL-INDEX) = 2
+                       MOVE 2 TO COLOUR(COUNTER)
+                   ELSE 
+                       MOVE 7 TO COLOUR(COUNTER)
+                   END-IF
+               END-PERFORM
+           END-PERFORM
            .
        PLACE-NEW-TILE.
       * CALLED TWICE BEFORE PLAY BEGINS AND ONCE EVERY TURN
@@ -312,6 +353,7 @@
            IF EMPTY-COUNT = ZERO
                SET GAME-OVER TO TRUE
                MOVE NO-MOVES-MESSAGE TO GRID-MESSAGE
+               PERFORM COLOUR-CHECK
                DISPLAY GAME-GRID-SCREEN
            END-IF
            COMPUTE RANDOM-NUMBER = FUNCTION RANDOM * EMPTY-COUNT + 1
