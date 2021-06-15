@@ -56,9 +56,7 @@
            IF SELL-IN IS LESS THAN 0 
                SUBTRACT 1 FROM QUALITY
            END-IF. 
-           IF QUALITY IS LESS THAN 0 
-               MOVE 0 TO QUALITY
-           END-IF. 
+           PERFORM 0700-MIN-QUALITY. 
 
        0400-AGED-BRIE.
            IF QUALITY IS LESS THAN 50 
@@ -83,6 +81,9 @@
            IF SELL-IN IS LESS THAN 0
                SUBTRACT 2 FROM QUALITY
            END-IF. 
+           PERFORM 0700-MIN-QUALITY.
+
+       0700-MIN-QUALITY.
            IF QUALITY IS LESS THAN 0 
                MOVE 0 TO QUALITY
            END-IF. 
